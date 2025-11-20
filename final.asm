@@ -16,6 +16,13 @@ parse_loop:
 	li $t2, 92 # backward slash ascii
 	beq $t1, $t2, backward_slash
 	
+	li $t2, 42 # dash ascii
+	beq $t1, $t2, dash
+
+	li $t2, 94 # caret ascii
+	beq $t1, $t2, caret
+
+
 asterisk:
 	# code
 	b parse_loop
@@ -30,4 +37,12 @@ square_bracket:
 	
 backward_slash:
 	#code
-	b backward_slash
+	b parse_loop
+
+dash:
+	# code
+	b parse_loop
+
+caret:
+	#code
+	b parse_loop
