@@ -1,4 +1,4 @@
-# Name: Zora Djuric, Hugo, Dwayne Johnson
+# Name: Zora Djuric, Hugo Shamberger, Dwayne Johnson
 # CS 35101 Computer Organization
 # Project: FinalFinalFinal(regex.asm)
 # Date: 12/04/2025
