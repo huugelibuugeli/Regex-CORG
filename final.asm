@@ -1,7 +1,7 @@
-# Name: Zora, Hugo, Dwayne
+# Name: Zora Djuric, Hugo, Dwayne Johnson
 # CS 35101 Computer Organization
-# Project: MIPS Regular Expression Matcher (regex.asm)
-# Date: [Current Date]
+# Project: FinalFinalFinal(regex.asm)
+# Date: 12/04/2025
 #
 # Description:
 # This program reads a regex pattern and a text string, then finds
