@@ -1,51 +1,132 @@
+.data
+input1:     .asciiz "ab\."
+input2:     .asciiz "ab.fasf"
 
+tmp_input1: .space 128
+output:     .space 128
+
+.text
+.globl main
+
+main:
+    li $t9, 0  # input1 index
+    li $t8, 0  # tmp_input1 index
+    j parse_loop
+
+# -----------------------------
+# instruction parse loop
+# -----------------------------
 parse_loop:
-	#############################
-	#loading next character to $t1
-	#############################
-	
-	li $t2, 42 # asterisk ascii
-	beq $t1, $t2, asterisk
-	
-	li $t2, 46 # period ascii
-	beq $t1, $t2, period
-	
-	li $t2, 93 # backward square bracket ascii
-	beq $t1, $t2, square_bracket
-	
-	li $t2, 92 # backward slash ascii
-	beq $t1, $t2, backward_slash
-	
-	li $t2, 45 # dash ascii
-	beq $t1, $t2, dash
+    la $t2, input1
+    add $t2, $t2, $t9
+    lb $t1, 0($t2)
 
-	li $t2, 94 # caret ascii
-	beq $t1, $t2, caret
+    # backward slash
+    li $t2, 92
+    beq $t1, $t2, backward_slash
 
+    li $t2, 42
+    beq $t1, $t2, asterisk
 
+    li $t2, 46
+    beq $t1, $t2, period
+
+    li $t2, 93
+    beq $t1, $t2, square_bracket
+
+    li $t2, 45
+    beq $t1, $t2, dash
+
+    li $t2, 94
+    beq $t1, $t2, caret
+
+    beq $t1, $zero, equality   # end of input1 triggers equality
+
+    # store literal character
+    la $t2, tmp_input1
+    add $t2, $t2, $t8
+    sb $t1, 0($t2)
+    addi $t8, $t8, 1
+    la $t2, tmp_input1
+    add $t2, $t2, $t8
+    sb $zero, 0($t2)
+
+    addi $t9, $t9, 1
+    j parse_loop
+
+backward_slash:
+    addi $t9, $t9, 1
+    la $t2, input1
+    add $t2, $t2, $t9
+    lb $t1, 0($t2)
+
+    # store literal after backslash
+    la $t2, tmp_input1
+    add $t2, $t2, $t8
+    sb $t1, 0($t2)
+    addi $t8, $t8, 1
+    la $t2, tmp_input1
+    add $t2, $t2, $t8
+    sb $zero, 0($t2)
+
+    addi $t9, $t9, 1
+    j parse_loop
+
+# -----------------------------
+# equality check (match from start of input2)
+# -----------------------------
+equality:
+    li $t3, 0           # tmp_input1 index
+    li $t4, 0           # input2 index
+
+eq_loop:
+    la $t2, tmp_input1
+    add $t2, $t2, $t3
+    lb $a0, 0($t2)
+    beq $a0, $zero, eq_done   # end of tmp_input1 => done
+
+    la $t5, input2
+    add $t5, $t5, $t4
+    lb $a1, 0($t5)
+    beq $a1, $zero, eq_done   # end of input2 => done
+
+    bne $a0, $a1, eq_done     # mismatch => done
+
+    addi $t3, $t3, 1
+    addi $t4, $t4, 1
+    j eq_loop
+
+eq_done:
+    # print matched portion
+    li $t0, 0
+print_loop:
+    beq $t0, $t3, program_end
+    la $t2, tmp_input1
+    add $t2, $t2, $t0
+    lb $a0, 0($t2)
+    li $v0, 11
+    syscall
+    addi $t0, $t0, 1
+    j print_loop
+
+# -----------------------------
+# operator placeholders (skeleton intact)
+# -----------------------------
 asterisk:
-	# code
-	b parse_loop
-	
+    add $t8, $zero, $t9
+    #j parse_loop
+
 period:
-	# code
-	b parse_loop
+    #j parse_loop
 
 square_bracket:
-	# code
-	b parse_loop
-	
-backward_slash:
-	#code
-	b parse_loop
+    #j parse_loop
 
 dash:
-	# code
-	b parse_loop
+    #j parse_loop
 
 caret:
-	#code
-	b parse_loop
+    #j parse_loop
 
 print_match:
     addi $sp, $sp, -16
